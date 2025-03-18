@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col justify-center items-center">
+
+<div class="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-xl">
+    <h2 class="text-2xl font-semibold text-center mb-4">Deposit Funds</h2>
+
+    <!-- Deposit Form -->
+    <div class="mb-6">
+        <input type="text" id="depositAccountId" placeholder="Account ID"
+               class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3" />
+        <input type="number" id="depositAmount" placeholder="Amount"
+               class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3" />
+        <button onclick="depositMoney()"
+                class="w-full bg-blue-500 hover:bg-blue-600 transition text-white font-bold py-3 rounded-lg">
+            Deposit
+        </button>
+    </div>
+
+    <hr class="border-gray-600 my-4">
+
+    <!-- Withdraw Form -->
+    <h2 class="text-2xl font-semibold text-center mb-4">Withdraw Funds</h2>
+    <div>
+        <input type="text" id="withdrawAccountId" placeholder="Account ID"
+               class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3" />
+        <input type="number" id="withdrawAmount" placeholder="Amount"
+               class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-3" />
+        <button onclick="withdrawMoney()"
+                class="w-full bg-red-500 hover:bg-red-600 transition text-white font-bold py-3 rounded-lg">
+            Withdraw
+        </button>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-6">
+        <a href="/" class="bg-gray-600 hover:bg-gray-700 transition text-white font-bold py-2 px-6 rounded-lg">
+            Back to Main Page
+        </a>
+    </div>
+</div>
+
+<script>
+    function depositMoney() {
+        var accountId = $("#depositAccountId").val();
+        var amount = $("#depositAmount").val();
+        $.ajax({
+            url: '/api/bank/deposit',
+            method: 'POST',
+            data: { accountId: accountId, amount: amount },
+            success: function(response) {
+                alert(response);
+            },
+            error: function() {
+                alert("Error making deposit!");
+            }
+        });
+    }
+
+    function withdrawMoney() {
+        var accountId = $('#withdrawAccountId').val();
+        var amount = $('#withdrawAmount').val();
+        $.ajax({
+            url: '/api/bank/withdraw',
+            method: 'POST',
+            data: { accountId: accountId, amount: amount },
+            success: function(response) {
+                alert(response);
+            },
+            error: function() {
+                alert("Error making withdrawal!");
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

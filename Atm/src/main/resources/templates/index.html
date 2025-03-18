@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserSec | Panel</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+<!-- Navigation -->
+<header class="bg-blue-800 py-4 shadow-lg">
+    <div class="container mx-auto flex items-center justify-between px-6">
+        <h2 class="text-white text-2xl font-semibold">Welcome to ExpressBank</h2>
+        <nav>
+            <a href="/deposit" class="text-white hover:text-gray-300 transition">Deposit</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Main Section -->
+<main class="flex flex-grow items-center justify-center">
+    <div class="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-xl">
+        <h3 class="text-center text-2xl font-semibold mb-4">Get Account Info</h3>
+
+        <!-- Account Info Form -->
+        <div class="mb-4">
+            <input type="text" id="accountInfoId" placeholder="Enter Account ID"
+                   class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <button id="getAccountInfoBtn"
+                class="w-full bg-blue-500 hover:bg-blue-600 transition text-white font-bold py-3 rounded-lg">
+            Get Account Info
+        </button>
+
+        <!-- New Register Now Button (Link to Register Page) -->
+        <a href="/register">
+            <button
+                    class="w-full bg-green-500 hover:bg-green-600 transition text-white font-bold py-3 rounded-lg mt-4">
+                Register Now
+            </button>
+        </a>
+
+        <!-- Account Details Display -->
+        <div id="accountDetails" class="text-lg font-semibold mt-4 text-center"></div>
+    </div>
+</main>
+
+<script>
+    $(document).ready(function() {
+        // Handle Account Info Button Click
+        $("#getAccountInfoBtn").click(function() {
+            getAccountInfo();
+        });
+    });
+
+   function getAccountInfo() {
+    let accountId = $("#accountInfoId").val();
+    if (accountId === "") {
+        alert("Please enter a valid Account ID.");
+        return;
+    }
+
+    $.ajax({
+        url: '/api/bank/account/' + accountId,
+        method: 'GET',
+        success: function(response) {
+            $("#accountDetails").html(`
+                <p>Account Holder: ${response.accountHolderName}</p>
+                <p>Balance: $${response.balance.toFixed(2)}</p>
+            `);
+        },
+        error: function(xhr) {
+            console.error("Error:", xhr.responseText);
+            alert("Error: " + (xhr.responseText || "Account not found!"));
+        }
+    });
+}
+
+
+</script>
+
+</body>
+</html>

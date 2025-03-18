@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+<body class="bg-gray-900 text-white">
+<div class="container mt-5">
+  <h1 class="title">Admin Panel</h1>
+  <table class="table is-fullwidth is-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Balance</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="userTableBody">
+    <!-- Users will be loaded here -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  $(document).ready(function() {
+      fetchUsers();
+
+      // Fetch all users
+      function fetchUsers() {
+          $.get('/api/admin/users', function(users) {
+              let tableBody = $("#userTableBody");
+              tableBody.empty();
+              users.forEach(user => {
+                  let status = user.blocked ? "Blocked" : "Active";
+                  tableBody.append(`
+                      <tr>
+                          <td>${user.id}</td>
+                          <td>${user.fullName}</td>
+                          <td>${user.balance}</td>
+                          <td>${status}</td>
+                          <td>
+                              <button class="button is-small is-danger" onclick="blockUser(${user.id})">Block</button>
+                              <button class="button is-small is-success" onclick="unblockUser(${user.id})">Unblock</button>
+                          </td>
+                      </tr>
+                  `);
+              });
+          }).fail(function() {
+              alert("Failed to fetch users. Check server connection.");
+          });
+      }
+
+      // Block user
+      window.blockUser = function(id) {
+          $.ajax({
+              url: `/api/admin/user/${id}/block`,
+              method: 'PUT',
+              success: function() {
+                  alert("User blocked!");
+                  fetchUsers();
+              },
+              error: function() {
+                  alert("Failed to block user. Please try again.");
+              }
+          });
+      };
+
+      // Unblock user
+      window.unblockUser = function(id) {
+          $.ajax({
+              url: `/api/admin/user/${id}/unblock`,
+              method: 'PUT',
+              success: function() {
+                  alert("User unblocked!");
+                  fetchUsers();
+              },
+              error: function() {
+                  alert("Failed to unblock user. Please try again.");
+              }
+          });
+      };
+  });
+</script>
+</body>
+</html>

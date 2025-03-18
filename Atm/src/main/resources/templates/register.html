@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | UserSec</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+
+<!-- Navigation -->
+<header class="bg-blue-800 py-4 shadow-lg">
+    <div class="container mx-auto flex items-center justify-between px-6">
+        <h2 class="text-white text-2xl font-semibold">Register Your Account</h2>
+        <nav>
+            <a href="/" class="text-white hover:text-gray-300 transition">Home</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Registration Form Section -->
+<main class="flex flex-grow items-center justify-center">
+    <div class="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-xl">
+        <h3 class="text-center text-2xl font-semibold mb-4">Register Your Account</h3>
+
+        <!-- Registration Form -->
+        <form id="registerForm">
+            <div class="mb-4">
+                <input type="text" id="name" placeholder="Name"
+                       class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            </div>
+            <div class="mb-4">
+                <input type="text" id="surname" placeholder="Surname"
+                       class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            </div>
+            <div class="mb-4">
+                <input type="date" id="birthDate" placeholder="Birth Date"
+                       class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            </div>
+            <div class="mb-4">
+                <input type="text" id="newAccountId" placeholder="Account ID"
+                       class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            </div>
+            <div class="mb-4">
+                <input type="number" id="money" placeholder="Money"
+                       class="w-full px-4 py-3 bg-gray-700 text-white border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" required />
+            </div>
+            <!-- Button to submit the form -->
+            <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 transition text-white font-bold py-3 rounded-lg">
+                Register
+            </button>
+        </form>
+    </div>
+</main>
+
+<script>
+    $('#registerForm').submit(function(event) {
+    event.preventDefault();
+
+    // Collect form data
+    let name = $('#name').val();
+    let surname = $('#surname').val();
+    let birthDate = $('#birthDate').val();
+    let money = $('#money').val();
+
+    if (money <= 0) {
+        alert("Money must be a positive number.");
+        return;
+    }
+
+    let fullName = name + " " + surname;
+
+    $.ajax({
+        url: '/api/bank/user',
+        method: 'POST',
+        data: {
+            fullName: fullName,
+            birthDate: birthDate,
+            balance: money
+        },
+        success: function(response) {
+            alert("User Registered: " + response.fullName);
+        },
+        error: function(xhr, status, error) {
+            alert("Failed to register user. Please try again.");
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>
